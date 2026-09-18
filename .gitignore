@@ -1,0 +1,29 @@
+# Vivado generated directories
+.cache/
+.hw/
+.ip_user_files/
+.sim/
+.gen/
+runs/
+
+# Vivado generated files
+*.jou
+*.log
+*.str
+*.wdb
+*.dcp
+*.pb
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
