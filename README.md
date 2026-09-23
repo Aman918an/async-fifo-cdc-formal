@@ -4,7 +4,7 @@ A parameterized asynchronous FIFO project developed in SystemVerilog, focusing o
 
 ## Project Status
 
-🚧 **In Progress**
+**In Progress**
 
 ### Completed
 
@@ -13,11 +13,12 @@ A parameterized asynchronous FIFO project developed in SystemVerilog, focusing o
 - [x] 2-FF synchronizer
 - [x] Active-low asynchronous reset
 - [x] RTL simulation of the synchronizer
+- [x] Binary FIFO pointer counter
+- [x] Binary-to-Gray conversion
+- [x] Gray-code transition verification
 
 ### Upcoming
 
-- [ ] Binary FIFO pointers
-- [ ] Gray-code conversion
 - [ ] Pointer synchronization
 - [ ] Write-domain control
 - [ ] Read-domain control
@@ -107,10 +108,15 @@ Simulation is performed using AMD/Xilinx Vivado XSim.
 async-fifo-cdc-formal/
 │
 ├── rtl/
+│   ├── bin_to_gray.sv
+│   ├── binary_counter.sv
 │   └── cdc_synchronizer.sv
 │
 ├── tb/
-│   └── tb_cdc_synchronizer.sv
+│   ├── tb_bin_to_gray.sv
+│   ├── tb_binary_counter.sv
+│   ├── tb_cdc_synchronizer.sv
+│   └── tb_pointer_gray.sv
 │
 ├── README.md
 └── .gitignore
@@ -133,7 +139,7 @@ Formal verification tools will be added as the project develops.
 | Focus | Status |
 |---|---|
 | CDC and 2-FF synchronizer | ✅ |
-| Binary counter and Gray code | ⬜ |
+| Binary counter and Gray code | ✅ |
 | Asynchronous FIFO architecture | ⬜ |
 | Write-domain control | ⬜ |
 | Read-domain control | ⬜ |
