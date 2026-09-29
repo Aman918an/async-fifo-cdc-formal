@@ -16,14 +16,18 @@ A parameterized asynchronous FIFO project developed in SystemVerilog, focusing o
 - [x] Binary FIFO pointer counter
 - [x] Binary-to-Gray conversion
 - [x] Gray-code transition verification
+- [x] Asynchronous FIFO pointer architecture
+- [x] Two-way Gray-pointer synchronization
+- [x] Write-pointer next-state logic
+- [x] Read-pointer next-state logic
+- [x] Empty detection and registered empty flag
+- [x] Full detection and registered full flag
+- [x] RTL simulation of pointer CDC and FIFO control logic
 
 ### Upcoming
 
-- [ ] Pointer synchronization
-- [ ] Write-domain control
-- [ ] Read-domain control
-- [ ] Full/empty detection
-- [ ] Complete asynchronous FIFO
+- [ ] FIFO data memory
+- [ ] Complete asynchronous FIFO integration
 - [ ] Randomized verification
 - [ ] SystemVerilog Assertions
 - [ ] Formal verification
@@ -110,16 +114,26 @@ async-fifo-cdc-formal/
 ├── rtl/
 │   ├── bin_to_gray.sv
 │   ├── binary_counter.sv
-│   └── cdc_synchronizer.sv
+│   ├── cdc_synchronizer.sv
+│   ├── gray_pointer_sync.sv
+│   ├── read_pointer.sv
+│   └── write_pointer.sv
 │
-├── tb/
+├── testbench/
 │   ├── tb_bin_to_gray.sv
 │   ├── tb_binary_counter.sv
 │   ├── tb_cdc_synchronizer.sv
-│   └── tb_pointer_gray.sv
+│   ├── tb_gray_pointer_sync.sv
+│   ├── tb_pointer_cdc.sv
+│   ├── tb_pointer_gray.sv
+│   ├── tb_read_pointer.sv
+│   ├── tb_read_pointer_gray.sv
+│   ├── tb_write_pointer.sv
+│   └── tb_write_pointer_gray.sv
 │
-├── README.md
-└── .gitignore
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ---
@@ -140,10 +154,12 @@ Formal verification tools will be added as the project develops.
 |---|---|
 | CDC and 2-FF synchronizer | ✅ |
 | Binary counter and Gray code | ✅ |
-| Asynchronous FIFO architecture | ⬜ |
-| Write-domain control | ⬜ |
-| Read-domain control | ⬜ |
-| Full/empty detection | ⬜ |
+| Asynchronous FIFO pointer architecture | ✅ |
+| Two-way pointer synchronization | ✅ |
+| Write-domain pointer control | ✅ |
+| Read-domain pointer control | ✅ |
+| Full/empty detection | ✅ |
+| FIFO data memory | ⬜ |
 | Complete asynchronous FIFO | ⬜ |
 | Stress and randomized verification | ⬜ |
 | Formal verification | ⬜ |
