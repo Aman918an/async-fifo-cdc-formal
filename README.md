@@ -8,27 +8,28 @@ A parameterized asynchronous FIFO project developed in SystemVerilog, focusing o
 
 ### Completed
 
-- [x] CDC fundamentals
-- [x] Metastability concepts
-- [x] 2-FF synchronizer
-- [x] Active-low asynchronous reset
-- [x] RTL simulation of the synchronizer
+- [x] CDC fundamentals and metastability concepts
+- [x] 2-FF synchronizer with active-low asynchronous reset
 - [x] Binary FIFO pointer counter
-- [x] Binary-to-Gray conversion
-- [x] Gray-code transition verification
+- [x] Binary-to-Gray conversion and Gray-code transition verification
 - [x] Asynchronous FIFO pointer architecture
 - [x] Two-way Gray-pointer synchronization
-- [x] Write-pointer next-state logic
-- [x] Read-pointer next-state logic
+- [x] Write-pointer and read-pointer next-state logic
 - [x] Empty detection and registered empty flag
 - [x] Full detection and registered full flag
-- [x] RTL simulation of pointer CDC and FIFO control logic
+- [x] Dual-clock FIFO data memory
+- [x] Top-level asynchronous FIFO integration
+- [x] Directed self-checking simulation of FIFO operation
+- [x] Overflow protection and write-pointer stability check
+- [x] Read ordering, wrap-around/reuse, and empty-read protection checks
+- [x] Recovery after empty state
+- [x] Current directed testbench run: 20 checks passed, 0 failed
 
 ### Upcoming
 
-- [ ] FIFO data memory
-- [ ] Complete asynchronous FIFO integration
-- [ ] Randomized verification
+- [ ] Finish reviewing and extending directed test coverage
+- [ ] Testbench cleanup and check-count improvements
+- [ ] Randomized and stress verification
 - [ ] SystemVerilog Assertions
 - [ ] Formal verification
 - [ ] Vivado synthesis and timing analysis
@@ -43,13 +44,13 @@ The objective of this project is to design and verify an asynchronous FIFO capab
 
 The project focuses on:
 
-- Clock-domain crossing
-- Metastability mitigation
-- Gray-coded FIFO pointers
-- Asynchronous FIFO architecture
-- Assertion-based verification
-- Formal verification
-- FPGA synthesis and timing analysis
+- Clock-domain crossing and metastability mitigation
+- Gray-coded FIFO pointers and synchronized pointer transfer
+- Independent write and read clock domains
+- FIFO data storage and full/empty flow control
+- Self-checking RTL simulation
+- Assertion-based and formal verification (planned)
+- FPGA synthesis and timing analysis (planned)
 
 No physical FPGA board is required for the validation planned in this project.
 
@@ -89,14 +90,53 @@ rst_n = 1 → normal operation
 
 ## 3. Verification
 
-The testbench applies asynchronous transitions to `async_in` while the destination clock continues independently.
+The project uses focused module-level testbenches as well as a top-level FIFO testbench with independent write and read clocks.
 
-The simulation verifies:
+The current directed top-level simulation checks:
 
-- Reset behavior
-- Two-stage synchronization
-- Correct propagation of the asynchronous input
-- Destination output following the second synchronizer stage
+* FIFO writes and reads
+* Full assertion and rejection of an overflow write
+* Write-pointer and stored-data stability during overflow
+* Read ordering after a slot is freed and reused
+* Empty assertion and rejection of an empty read
+* Recovery by writing and reading data after the FIFO becomes empty
+* FIFO returning to the empty state after the final read
+
+### Directed Verification Results
+
+The self-checking testbench was executed using AMD/Xilinx Vivado XSim.
+
+**Simulation Summary**
+
+| Metric         | Result |
+| -------------- | -----: |
+| Total checks   |     21 |
+| Passed         |     21 |
+| Failed         |      0 |
+| Overall result |   PASS |
+
+**Verified scenarios:**
+
+* Write-pointer stability during FIFO overflow
+* Memory contents remain unchanged during rejected writes
+* Correct FIFO read ordering
+* FIFO address wrap-around and memory reuse
+* Empty-read protection
+* Recovery after the FIFO becomes empty
+* Correct recovery data retrieval
+* FIFO returns to the empty state after the final read
+
+```text
+--------------------------------
+FIFO VERIFICATION SUMMARY
+Total Checks : 21
+Passed       : 21
+Failed       : 0
+--------------------------------
+FINAL RESULT: ALL TESTS PASSED
+```
+
+> These results represent directed simulation coverage. Randomized verification, assertion-based verification, and formal verification are still pending.
 
 ### Simulation
 
@@ -112,9 +152,12 @@ Simulation is performed using AMD/Xilinx Vivado XSim.
 async-fifo-cdc-formal/
 │
 ├── rtl/
+│   ├── async_fifo.sv
 │   ├── bin_to_gray.sv
 │   ├── binary_counter.sv
 │   ├── cdc_synchronizer.sv
+│   ├── fifo_memory.sv
+│   ├── fifo_status.sv
 │   ├── gray_pointer_sync.sv
 │   ├── read_pointer.sv
 │   └── write_pointer.sv
@@ -123,6 +166,8 @@ async-fifo-cdc-formal/
 │   ├── tb_bin_to_gray.sv
 │   ├── tb_binary_counter.sv
 │   ├── tb_cdc_synchronizer.sv
+│   ├── tb_fifo_memory.sv
+│   ├── tb_fifo_status.sv
 │   ├── tb_gray_pointer_sync.sv
 │   ├── tb_pointer_cdc.sv
 │   ├── tb_pointer_gray.sv
@@ -159,9 +204,12 @@ Formal verification tools will be added as the project develops.
 | Write-domain pointer control | ✅ |
 | Read-domain pointer control | ✅ |
 | Full/empty detection | ✅ |
-| FIFO data memory | ⬜ |
-| Complete asynchronous FIFO | ⬜ |
-| Stress and randomized verification | ⬜ |
+| Dual-clock FIFO data memory | ✅ |
+| Top-level asynchronous FIFO integration | ✅ |
+| Directed self-checking simulation | ✅ |
+| Overflow, empty-read, ordering, wrap-around, recovery checks | ✅ |
+| Additional directed/stress verification | 🔄 |
+| SystemVerilog Assertions | ⬜ |
 | Formal verification | ⬜ |
 | Vivado synthesis and PPA analysis | ⬜ |
 
@@ -169,16 +217,19 @@ Formal verification tools will be added as the project develops.
 
 ## 7. Validation Scope
 
-The final design will be validated through:
+Validation completed so far:
 
-1. RTL simulation
-2. Self-checking testbench
-3. Randomized testing
-4. SystemVerilog Assertions
-5. Formal verification
-6. Vivado synthesis
-7. Static timing analysis
-8. Resource utilization analysis
+1. Module-level RTL simulation
+2. Directed self-checking top-level FIFO simulation
+
+Further planned validation:
+
+1. Expanded directed and randomized testing
+2. SystemVerilog Assertions
+3. Formal verification
+4. Vivado synthesis
+5. Static timing analysis
+6. Resource utilization analysis
 
 Physical FPGA hardware validation is outside the scope of this project.
 
