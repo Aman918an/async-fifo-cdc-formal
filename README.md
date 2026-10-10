@@ -34,7 +34,7 @@ A parameterized asynchronous FIFO project developed in SystemVerilog, focusing o
 | Accepted randomized writes | 411 |
 | Accepted randomized reads | 408 |
 | Overflow attempts | 93 |
-| Underflow attempts | 3 |
+| Underflow attempts | 5 |
 
 Random counts can vary between runs. These results are from simulation, not a formal proof.
 
