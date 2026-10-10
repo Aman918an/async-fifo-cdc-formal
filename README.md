@@ -9,29 +9,40 @@ A parameterized asynchronous FIFO project developed in SystemVerilog, focusing o
 ### Completed
 
 - [x] CDC fundamentals and metastability concepts
-- [x] 2-FF synchronizer with active-low asynchronous reset
-- [x] Binary FIFO pointer counter
-- [x] Binary-to-Gray conversion and Gray-code transition verification
-- [x] Asynchronous FIFO pointer architecture
+- [x] Two-flop synchronizer with active-low asynchronous reset
+- [x] Binary FIFO pointers and binary-to-Gray conversion
 - [x] Two-way Gray-pointer synchronization
-- [x] Write-pointer and read-pointer next-state logic
-- [x] Empty detection and registered empty flag
-- [x] Full detection and registered full flag
-- [x] Dual-clock FIFO data memory
-- [x] Top-level asynchronous FIFO integration
-- [x] Directed self-checking simulation of FIFO operation
-- [x] Overflow protection and write-pointer stability check
-- [x] Read ordering, wrap-around/reuse, and empty-read protection checks
-- [x] Recovery after empty state
-- [x] Current directed testbench run: 20 checks passed, 0 failed
+- [x] Write/read pointer next-state logic
+- [x] Registered full and empty status logic
+- [x] Dual-clock FIFO memory and top-level integration
+- [x] Directed self-checking simulation
+- [x] Overflow protection and write-pointer stability checks
+- [x] Empty-read protection and read-pointer stability checks
+- [x] Wrap-around/reuse and recovery-after-empty checks
+- [x] Randomized traffic with a queue-based data-order scoreboard
+- [x] Randomized counters for accepted writes/reads and overflow/underflow attempts
+- [x] Bounded waits for directed full/empty transitions
+- [x] Simulation-time SystemVerilog Assertions (SVA)
+
+### Latest recorded randomized simulation
+
+| Metric | Result |
+|---|---:|
+| Total checks | 427 |
+| Passed | 427 |
+| Failed | 0 |
+| Accepted randomized writes | 411 |
+| Accepted randomized reads | 408 |
+| Overflow attempts | 93 |
+| Underflow attempts | 3 |
+
+Random counts can vary between runs. These results are from simulation, not a formal proof.
 
 ### Upcoming
 
-- [ ] Finish reviewing and extending directed test coverage
-- [ ] Testbench cleanup and check-count improvements
-- [ ] Randomized and stress verification
-- [ ] SystemVerilog Assertions
-- [ ] Formal verification
+- [ ] Stress testing and pointer-wrap coverage
+- [ ] Reset asserted during FIFO activity and recovery checks
+- [ ] Formal verification using a formal engine
 - [ ] Vivado synthesis and timing analysis
 - [ ] Resource utilization analysis
 - [ ] Parameterized design-space exploration
@@ -90,59 +101,36 @@ rst_n = 1 → normal operation
 
 ## 3. Verification
 
-The project uses focused module-level testbenches as well as a top-level FIFO testbench with independent write and read clocks.
+The project uses focused module-level testbenches and a top-level FIFO testbench with independent write and read clocks. The top-level testbench is currently named `tb_fifo_memory.sv`, although it instantiates and verifies the complete `async_fifo` DUT.
 
-The current directed top-level simulation checks:
+### Directed tests
 
-* FIFO writes and reads
-* Full assertion and rejection of an overflow write
-* Write-pointer and stored-data stability during overflow
-* Read ordering after a slot is freed and reused
-* Empty assertion and rejection of an empty read
-* Recovery by writing and reading data after the FIFO becomes empty
-* FIFO returning to the empty state after the final read
+The directed sequence checks:
 
-### Directed Verification Results
+- Filling the FIFO and waiting for `full`
+- Rejecting a write while full
+- Confirming the write pointer and stored memory remain unchanged during overflow
+- Reading an entry to free a slot and reusing the slot
+- Rejecting a read while empty
+- Writing and reading a recovery value after the FIFO becomes empty
 
-The self-checking testbench was executed using AMD/Xilinx Vivado XSim.
+### Randomized tests
 
-**Simulation Summary**
+Random write and read requests are generated on the negative edges of their respective clocks. A queue-based reference model records accepted writes and compares accepted read data against the oldest expected value. Counters track accepted writes, accepted reads, overflow attempts, and underflow attempts.
 
-| Metric         | Result |
-| -------------- | -----: |
-| Total checks   |     21 |
-| Passed         |     21 |
-| Failed         |      0 |
-| Overall result |   PASS |
+After random stimulus stops, the testbench drains outstanding reference-model entries using a bounded loop and checks that the DUT returns to empty.
 
-**Verified scenarios:**
+**Scoreboard limitation:** the reference model uses the DUT's `full` and `empty` flags to identify accepted transactions. Therefore, it primarily checks data ordering for transactions accepted according to those flags. Directed protection checks and assertions provide additional control-logic checks.
 
-* Write-pointer stability during FIFO overflow
-* Memory contents remain unchanged during rejected writes
-* Correct FIFO read ordering
-* FIFO address wrap-around and memory reuse
-* Empty-read protection
-* Recovery after the FIFO becomes empty
-* Correct recovery data retrieval
-* FIFO returns to the empty state after the final read
+### Assertions and timeouts
 
-```text
---------------------------------
-FIFO VERIFICATION SUMMARY
-Total Checks : 21
-Passed       : 21
-Failed       : 0
---------------------------------
-FINAL RESULT: ALL TESTS PASSED
-```
+Simulation-time SVA checks cover pointer stability during blocked operations, Gray-pointer transitions, full/empty next-state equations, and pointer increments on accepted operations. Bounded tasks prevent directed full/empty waits from waiting indefinitely.
 
-> These results represent directed simulation coverage. Randomized verification, assertion-based verification, and formal verification are still pending.
+The assertions have passed in the recorded simulation run. They have **not** yet been proven using a formal verification engine.
 
-### Simulation
+### Simulation environment
 
-Simulation is performed using AMD/Xilinx Vivado XSim.
-
-> RTL simulation cannot reproduce physical metastability. The synchronizer architecture is intended to reduce the probability of metastability propagating into destination-domain logic.
+Simulation is performed using AMD/Xilinx Vivado XSim. RTL simulation cannot reproduce physical metastability; the synchronizer architecture is intended to reduce the probability of metastability propagating into destination-domain logic.
 
 ---
 
@@ -208,9 +196,9 @@ Formal verification tools will be added as the project develops.
 | Top-level asynchronous FIFO integration | ✅ |
 | Directed self-checking simulation | ✅ |
 | Overflow, empty-read, ordering, wrap-around, recovery checks | ✅ |
-| Additional directed/stress verification | 🔄 |
-| SystemVerilog Assertions | ⬜ |
-| Formal verification | ⬜ |
+| Stress and reset verification | 🔄 |
+| Simulation-time SystemVerilog Assertions | ✅ |
+| Formal verification proof | ⬜ |
 | Vivado synthesis and PPA analysis | ⬜ |
 
 ---
@@ -224,12 +212,11 @@ Validation completed so far:
 
 Further planned validation:
 
-1. Expanded directed and randomized testing
-2. SystemVerilog Assertions
-3. Formal verification
-4. Vivado synthesis
-5. Static timing analysis
-6. Resource utilization analysis
+1. Stress and reset-during-activity testing
+2. Formal verification
+3. Vivado synthesis
+4. Static timing analysis
+5. Resource utilization analysis
 
 Physical FPGA hardware validation is outside the scope of this project.
 
