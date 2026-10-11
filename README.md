@@ -23,28 +23,30 @@ A parameterized asynchronous FIFO project developed in SystemVerilog, focusing o
 - [x] Randomized counters for accepted writes/reads and overflow/underflow attempts
 - [x] Bounded waits for directed full/empty transitions
 - [x] Simulation-time SystemVerilog Assertions (SVA)
+- [x] Repeated fill-and-drain stress test across four rounds
+- [x] Reset during operation with unread data and recovery
+- [x] Reset while read/write requests are active and recovery
+- [x] Reset with a partially filled FIFO and nonzero pointer offset
 
-### Latest recorded randomized simulation
+### Latest recorded regression
 
 | Metric | Result |
 |---|---:|
-| Total checks | 427 |
-| Passed | 427 |
+| Total checks | 478 |
+| Passed | 478 |
 | Failed | 0 |
 | Accepted randomized writes | 411 |
 | Accepted randomized reads | 408 |
 | Overflow attempts | 93 |
-| Underflow attempts | 5 |
+| Underflow attempts | 3 |
 
-Random counts can vary between runs. These results are from simulation, not a formal proof.
+The regression passed with **478/478 checks and zero failures**. Randomized counts can vary between runs. These are simulation results, not a formal proof.
 
-### Upcoming
+### Remaining work
 
-- [ ] Stress testing and pointer-wrap coverage
-- [ ] Reset asserted during FIFO activity and recovery checks
 - [ ] Formal verification using a formal engine
 - [ ] Vivado synthesis and timing analysis
-- [ ] Resource utilization analysis
+- [ ] Resource utilization and timing analysis
 - [ ] Parameterized design-space exploration
 
 ---
@@ -196,7 +198,7 @@ Formal verification tools will be added as the project develops.
 | Top-level asynchronous FIFO integration | ✅ |
 | Directed self-checking simulation | ✅ |
 | Overflow, empty-read, ordering, wrap-around, recovery checks | ✅ |
-| Stress and reset verification | 🔄 |
+| Repeated fill-and-drain stress and reset verification | ✅ |
 | Simulation-time SystemVerilog Assertions | ✅ |
 | Formal verification proof | ⬜ |
 | Vivado synthesis and PPA analysis | ⬜ |
@@ -209,14 +211,18 @@ Validation completed so far:
 
 1. Module-level RTL simulation
 2. Directed self-checking top-level FIFO simulation
+3. Randomized queue-based data-order checking
+4. Four rounds of fill-and-drain stress testing
+5. Reset during operation, active requests, and partial occupancy
+6. Simulation-time SVA checks
 
 Further planned validation:
 
-1. Stress and reset-during-activity testing
-2. Formal verification
-3. Vivado synthesis
-4. Static timing analysis
-5. Resource utilization analysis
+1. Formal verification
+2. Vivado synthesis
+3. Static timing analysis
+4. Resource utilization analysis
+5. Parameterized design-space exploration
 
 Physical FPGA hardware validation is outside the scope of this project.
 
