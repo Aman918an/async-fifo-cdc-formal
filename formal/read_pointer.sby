@@ -1,0 +1,14 @@
+[options]
+mode prove
+depth 16
+
+[engines]
+smtbmc boolector
+
+[script]
+read_verilog -formal -sv read_pointer.sv read_pointer_formal.sv
+prep -top read_pointer_formal
+
+[files]
+cdc_synchronizer.srcs/sources_1/new/read_pointer.sv
+formal/read_pointer_formal.sv
