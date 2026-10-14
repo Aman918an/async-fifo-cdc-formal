@@ -1,0 +1,14 @@
+[options]
+mode prove
+depth 16
+
+[engines]
+smtbmc boolector
+
+[script]
+read_verilog -formal -sv bin_to_gray.sv bin_to_gray_formal.sv
+prep -top bin_to_gray_formal
+
+[files]
+cdc_synchronizer.srcs/sources_1/new/bin_to_gray.sv
+formal/bin_to_gray_formal.sv
