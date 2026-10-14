@@ -168,4 +168,82 @@ memory_inst (
 );
 
 
+`ifdef FORMAL
+// Verify the actual internal acceptance signals.
+always_comb begin
+    assert (mem_write_en == (write_en && !full));
+    assert (mem_read_en == (read_en && !empty));
+end
+
+// Track whether $past values are valid in the write-clock domain.
+// clk2fflogic gives $past shadow registers unconstrained (anyinit)
+// initial values. We must wait one write_clk posedge with rst_n
+// active before those shadow registers hold meaningful data.
+reg wr_past_valid;
+initial wr_past_valid = 1'b0;
+always @(posedge write_clk or negedge rst_n) begin
+    if (!rst_n)
+        wr_past_valid <= 1'b0;
+    else
+        wr_past_valid <= 1'b1;
+end
+
+// Verify write-pointer advancement in the integrated FIFO.
+always @(posedge write_clk) begin
+    if (wr_past_valid && rst_n && $past(rst_n)) begin
+        if ($past(mem_write_en))
+            assert (wr_ptr_bin == $past(wr_ptr_bin) + 1'b1);
+        else
+            assert (wr_ptr_bin == $past(wr_ptr_bin));
+    end
+end
+`endif
+
+
+`ifdef FORMAL_READ_PTR
+// Track whether $past values are valid in the read-clock domain.
+reg rd_past_valid;
+initial rd_past_valid = 1'b0;
+always @(posedge read_clk or negedge rst_n) begin
+    if (!rst_n)
+        rd_past_valid <= 1'b0;
+    else
+        rd_past_valid <= 1'b1;
+end
+
+always @(posedge read_clk) begin
+    if (rd_past_valid && rst_n && $past(rst_n)) begin
+        if ($past(mem_read_en))
+            assert (rd_ptr_bin == $past(rd_ptr_bin) + 1'b1);
+        else
+            assert (rd_ptr_bin == $past(rd_ptr_bin));
+    end
+end
+`endif
+
+`ifdef FORMAL_EMPTY
+// Track whether $past values are valid in the read-clock domain.
+reg rd_past_valid_empty;
+initial rd_past_valid_empty = 1'b0;
+always @(posedge read_clk or negedge rst_n) begin
+    if (!rst_n)
+        rd_past_valid_empty <= 1'b0;
+    else
+        rd_past_valid_empty <= 1'b1;
+end
+
+// Verify the registered empty-flag update.
+always @(posedge read_clk) begin
+    if (rd_past_valid_empty && rst_n && $past(rst_n))
+        assert (empty == $past(empty_next));
+end
+`endif
+
+`ifdef FORMAL_FULL
+// Verify the registered full-flag update.
+always @(posedge write_clk) begin
+    if (wr_past_valid && rst_n && $past(rst_n))
+        assert (full == $past(full_next));
+end
+`endif
 endmodule
