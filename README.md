@@ -4,7 +4,7 @@ A parameterized asynchronous FIFO project developed in SystemVerilog, focusing o
 
 ## Project Status
 
-**In Progress**
+**Core implementation and verification complete**
 
 ### Completed
 
@@ -42,12 +42,61 @@ A parameterized asynchronous FIFO project developed in SystemVerilog, focusing o
 
 The regression passed with **478/478 checks and zero failures**. Randomized counts can vary between runs. These are simulation results, not a formal proof.
 
-### Remaining work
+### Formal verification results
 
-- [ ] Formal verification using a formal engine
-- [ ] Vivado synthesis and timing analysis
-- [ ] Resource utilization and timing analysis
-- [ ] Parameterized design-space exploration
+Formal verification was performed using SymbiYosys (`sby`) with the Boolector SMT solver. All nine listed proof configurations completed successfully.
+
+| Formal configuration | Result |
+|---|---|
+| `async_fifo.sby` | Passed |
+| `async_fifo_empty.sby` | Passed |
+| `async_fifo_full.sby` | Passed |
+| `async_fifo_read_ptr.sby` | Passed |
+| `bin_to_gray.sby` | Passed |
+| `fifo_status.sby` | Passed |
+| `gray_pointer_sync.sby` | Passed |
+| `read_pointer.sby` | Passed |
+| `write_pointer.sby` | Passed |
+
+The `formal/` directory contains the `.sby` configurations and corresponding formal harnesses. These proofs establish the properties encoded in those harnesses under their assumptions; they do not automatically prove every possible behavior of the design.
+
+### Vivado implementation results
+
+The implementation target reported by Vivado is an Artix-7 device, `7a12ti-csg325`, speed grade `-1L`.
+
+| Metric | Result |
+|---|---:|
+| LUT | 25 / 8,000 (0.31%) |
+| LUTRAM | 6 / 5,000 (0.12%) |
+| Flip-flops (FF) | 34 / 16,000 (0.21%) |
+| I/O | 23 / 150 (15.33%) |
+| Worst Negative Slack (WNS) | +7.471 ns |
+| Total Negative Slack (TNS) | 0.000 ns |
+| Worst Hold Slack (WHS) | +0.122 ns |
+| Total Hold Slack (THS) | 0.000 ns |
+| Worst Pulse Width Slack (WPWS) | +3.750 ns |
+| Total Pulse Width Negative Slack (TPWS) | 0.000 ns |
+| Dynamic power estimate | 0.002 W |
+| Static power estimate | 0.059 W |
+
+The final timing summary reported zero failing setup, hold, and pulse-width endpoints for paths remaining under timing analysis. Power values are Vivado estimates, not measurements from a physical FPGA board.
+
+The XDC defines `write_clk` with a 10 ns period (100 MHz) and `read_clk` with a 14 ns period (approximately 71.43 MHz). The clocks are asynchronous and are declared as separate asynchronous clock groups.
+
+**Timing-analysis caveat:** asynchronous clock-group constraints exclude ordinary setup/hold analysis between these unrelated clock domains. A clean timing summary does not, by itself, prove CDC safety or metastability immunity. CDC correctness depends on the synchronizer structure, Gray-pointer transfer, and correct dual-clock memory behavior. Physical metastability cannot be reproduced by RTL simulation or proved impossible by these formal checks.
+
+
+### Completed implementation and verification
+
+- [x] Formal verification using SymbiYosys and Boolector
+- [x] Standalone formal proofs for binary-to-Gray conversion, write pointer, read pointer, Gray-pointer synchronizer, and FIFO status logic
+- [x] Integrated FIFO proof and targeted read-pointer, empty, and full proofs
+- [x] Vivado synthesis, implementation, resource utilization, and timing analysis
+
+### Optional future work
+
+- [ ] Explore additional FIFO depths and parameter configurations
+- [ ] Physical FPGA board validation, if suitable hardware becomes available
 
 ---
 
@@ -62,8 +111,8 @@ The project focuses on:
 - Independent write and read clock domains
 - FIFO data storage and full/empty flow control
 - Self-checking RTL simulation
-- Assertion-based and formal verification (planned)
-- FPGA synthesis and timing analysis (planned)
+- Assertion-based simulation and formal verification
+- FPGA synthesis, implementation, resource utilization, and timing analysis
 
 No physical FPGA board is required for the validation planned in this project.
 
@@ -140,6 +189,25 @@ Simulation is performed using AMD/Xilinx Vivado XSim. RTL simulation cannot repr
 
 ```text
 async-fifo-cdc-formal/
+├── constraints/
+│   └── async_fifo.xdc
+│
+├── formal/
+│   ├── async_fifo.sby
+│   ├── async_fifo_empty.sby
+│   ├── async_fifo_formal.sv
+│   ├── async_fifo_full.sby
+│   ├── async_fifo_read_ptr.sby
+│   ├── bin_to_gray.sby
+│   ├── bin_to_gray_formal.sv
+│   ├── fifo_status.sby
+│   ├── fifo_status_formal.sv
+│   ├── gray_pointer_sync.sby
+│   ├── gray_pointer_sync_formal.sv
+│   ├── read_pointer.sby
+│   ├── read_pointer_formal.sv
+│   ├── write_pointer.sby
+│   └── write_pointer_formal.sv
 │
 ├── rtl/
 │   ├── async_fifo.sv
@@ -176,10 +244,11 @@ async-fifo-cdc-formal/
 ## 5. Tools
 
 - SystemVerilog
-- AMD/Xilinx Vivado
+- AMD/Xilinx Vivado 2026.1
 - XSim
-
-Formal verification tools will be added as the project develops.
+- OSS CAD Suite
+- SymbiYosys (`sby`)
+- Boolector SMT solver
 
 ---
 
@@ -200,31 +269,38 @@ Formal verification tools will be added as the project develops.
 | Overflow, empty-read, ordering, wrap-around, recovery checks | ✅ |
 | Repeated fill-and-drain stress and reset verification | ✅ |
 | Simulation-time SystemVerilog Assertions | ✅ |
-| Formal verification proof | ⬜ |
-| Vivado synthesis and PPA analysis | ⬜ |
+| Formal verification proof | ✅ |
+| Vivado synthesis, implementation, timing, and resource analysis | ✅ |
 
 ---
 
 ## 7. Validation Scope
 
-Validation completed so far:
+Validation completed:
 
 1. Module-level RTL simulation
 2. Directed self-checking top-level FIFO simulation
 3. Randomized queue-based data-order checking
 4. Four rounds of fill-and-drain stress testing
 5. Reset during operation, active requests, and partial occupancy
-6. Simulation-time SVA checks
+6. Simulation-time SystemVerilog Assertions
+7. Formal proofs for the listed standalone modules
+8. Integrated FIFO and targeted read-pointer, empty, and full proofs
+9. Vivado synthesis and implementation
+10. Timing summary and resource utilization review
 
-Further planned validation:
+The recorded simulation regression passed 478 checks with zero failures. All nine listed SymbiYosys configurations completed successfully. The implemented design reported no failing setup, hold, or pulse-width endpoints under the active timing constraints.
 
-1. Formal verification
-2. Vivado synthesis
-3. Static timing analysis
-4. Resource utilization analysis
-5. Parameterized design-space exploration
+Limitations:
 
-Physical FPGA hardware validation is outside the scope of this project.
+- The scoreboard uses the DUT's `full` and `empty` flags to determine accepted transactions, so directed protection checks and assertions complement the data-order scoreboard.
+- Formal verification proves only the properties encoded in the harnesses and only under their assumptions.
+- Asynchronous clock groups exclude ordinary timing analysis between clock domains; CDC correctness still depends on the design structure.
+- RTL simulation and formal proofs do not establish that physical metastability is impossible.
+- Power values are tool estimates. No physical FPGA board validation has been performed.
+- Parameterized design-space exploration has not yet been completed.
+
+Physical FPGA hardware validation is outside the current project scope.
 
 ---
 
