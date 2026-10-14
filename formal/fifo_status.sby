@@ -1,0 +1,14 @@
+[options]
+mode prove
+depth 16
+
+[engines]
+smtbmc boolector
+
+[script]
+read_verilog -formal -sv fifo_status.sv fifo_status_formal.sv
+prep -top fifo_status_formal
+
+[files]
+cdc_synchronizer.srcs/sources_1/new/fifo_status.sv
+formal/fifo_status_formal.sv
