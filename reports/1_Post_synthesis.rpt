@@ -1,0 +1,350 @@
+
+==========================================================================
+Post synthesis report_tns
+--------------------------------------------------------------------------
+tns max 0.00
+
+==========================================================================
+Post synthesis report_wns
+--------------------------------------------------------------------------
+wns max 0.00
+
+==========================================================================
+Post synthesis report_worst_slack
+--------------------------------------------------------------------------
+worst slack max 9.59
+
+==========================================================================
+Post synthesis report_clock_min_period
+--------------------------------------------------------------------------
+read_clk period_min = 0.38 fmax = 2615.23
+write_clk period_min = 0.41 fmax = 2439.36
+
+==========================================================================
+Post synthesis report_checks -path_delay min
+--------------------------------------------------------------------------
+Startpoint: wr_to_rd_sync.sync_ff1[0]$_DFF_PN0_
+            (rising edge-triggered flip-flop clocked by read_clk)
+Endpoint: wr_to_rd_sync.gray_out[0]$_DFF_PN0_
+          (rising edge-triggered flip-flop clocked by read_clk)
+Path Group: read_clk
+Path Type: min
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock read_clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ wr_to_rd_sync.sync_ff1[0]$_DFF_PN0_/CK (DFFR_X1)
+     1    1.05    0.01    0.08    0.08 v wr_to_rd_sync.sync_ff1[0]$_DFF_PN0_/Q (DFFR_X1)
+                                         wr_to_rd_sync.sync_ff1[0] (net)
+                  0.01    0.00    0.08 v wr_to_rd_sync.gray_out[0]$_DFF_PN0_/D (DFFR_X1)
+                                  0.08   data arrival time
+
+                  0.00    0.00    0.00   clock read_clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                          0.00    0.00   clock reconvergence pessimism
+                                  0.00 ^ wr_to_rd_sync.gray_out[0]$_DFF_PN0_/CK (DFFR_X1)
+                          0.00    0.00   library hold time
+                                  0.00   data required time
+-----------------------------------------------------------------------------
+                                  0.00   data required time
+                                 -0.08   data arrival time
+-----------------------------------------------------------------------------
+                                  0.08   slack (MET)
+
+
+Startpoint: rd_to_wr_sync.sync_ff1[0]$_DFF_PN0_
+            (rising edge-triggered flip-flop clocked by write_clk)
+Endpoint: rd_to_wr_sync.gray_out[0]$_DFF_PN0_
+          (rising edge-triggered flip-flop clocked by write_clk)
+Path Group: write_clk
+Path Type: min
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock write_clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ rd_to_wr_sync.sync_ff1[0]$_DFF_PN0_/CK (DFFR_X1)
+     1    1.05    0.01    0.08    0.08 v rd_to_wr_sync.sync_ff1[0]$_DFF_PN0_/Q (DFFR_X1)
+                                         rd_to_wr_sync.sync_ff1[0] (net)
+                  0.01    0.00    0.08 v rd_to_wr_sync.gray_out[0]$_DFF_PN0_/D (DFFR_X1)
+                                  0.08   data arrival time
+
+                  0.00    0.00    0.00   clock write_clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                          0.00    0.00   clock reconvergence pessimism
+                                  0.00 ^ rd_to_wr_sync.gray_out[0]$_DFF_PN0_/CK (DFFR_X1)
+                          0.00    0.00   library hold time
+                                  0.00   data required time
+-----------------------------------------------------------------------------
+                                  0.00   data required time
+                                 -0.08   data arrival time
+-----------------------------------------------------------------------------
+                                  0.08   slack (MET)
+
+
+
+==========================================================================
+Post synthesis report_checks -path_delay max
+--------------------------------------------------------------------------
+Startpoint: empty$_DFF_PN1_
+            (rising edge-triggered flip-flop clocked by read_clk)
+Endpoint: empty$_DFF_PN1_ (rising edge-triggered flip-flop clocked by read_clk)
+Path Group: read_clk
+Path Type: max
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock read_clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ empty$_DFF_PN1_/CK (DFFS_X1)
+     1    6.20    0.02    0.08    0.08 ^ empty$_DFF_PN1_/QN (DFFS_X1)
+                                         _000_ (net)
+                  0.02    0.00    0.08 ^ _446_/A2 (NAND2_X4)
+    10   22.16    0.01    0.03    0.10 v _446_/ZN (NAND2_X4)
+                                         _014_ (net)
+                  0.01    0.00    0.10 v _457_/A (INV_X4)
+     4    5.81    0.01    0.01    0.12 ^ _457_/ZN (INV_X4)
+                                         _095_ (net)
+                  0.01    0.00    0.12 ^ _468_/A (BUF_X1)
+    10   17.85    0.04    0.06    0.18 ^ _468_/Z (BUF_X1)
+                                         mem_read_en (net)
+                  0.04    0.00    0.18 ^ _772_/A (HA_X1)
+     1    1.60    0.01    0.04    0.22 ^ _772_/CO (HA_X1)
+                                         _016_ (net)
+                  0.01    0.00    0.22 ^ _501_/A1 (NAND2_X1)
+     1    2.13    0.01    0.01    0.23 v _501_/ZN (NAND2_X1)
+                                         _097_ (net)
+                  0.01    0.00    0.23 v _523_/A (XNOR2_X1)
+     2    3.04    0.01    0.04    0.27 v _523_/ZN (XNOR2_X1)
+                                         _099_ (net)
+                  0.01    0.00    0.27 v _534_/A (INV_X1)
+     2    2.70    0.01    0.02    0.29 ^ _534_/ZN (INV_X1)
+                                         rd_gray_next.binary[3] (net)
+                  0.01    0.00    0.29 ^ _453_/B2 (OAI21_X1)
+     1    1.55    0.01    0.02    0.30 v _453_/ZN (OAI21_X1)
+                                         _174_ (net)
+                  0.01    0.00    0.30 v _454_/A (INV_X1)
+     1    1.60    0.01    0.01    0.31 ^ _454_/ZN (INV_X1)
+                                         _175_ (net)
+                  0.01    0.00    0.31 ^ _467_/A1 (NAND2_X1)
+     1    3.18    0.01    0.01    0.33 v _467_/ZN (NAND2_X1)
+                                         _185_ (net)
+                  0.01    0.00    0.33 v _469_/A2 (NOR2_X2)
+     1    1.16    0.01    0.02    0.35 ^ _469_/ZN (NOR2_X2)
+                                         empty_next (net)
+                  0.01    0.00    0.35 ^ empty$_DFF_PN1_/D (DFFS_X1)
+                                  0.35   data arrival time
+
+                  0.00   14.00   14.00   clock read_clk (rise edge)
+                          0.00   14.00   clock network delay (ideal)
+                          0.00   14.00   clock reconvergence pessimism
+                                 14.00 ^ empty$_DFF_PN1_/CK (DFFS_X1)
+                         -0.03   13.97   library setup time
+                                 13.97   data required time
+-----------------------------------------------------------------------------
+                                 13.97   data required time
+                                 -0.35   data arrival time
+-----------------------------------------------------------------------------
+                                 13.62   slack (MET)
+
+
+Startpoint: write_pointer_inst.wr_ptr_bin[1]$_DFF_PN0_
+            (rising edge-triggered flip-flop clocked by write_clk)
+Endpoint: full$_DFF_PN0_ (rising edge-triggered flip-flop clocked by write_clk)
+Path Group: write_clk
+Path Type: max
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock write_clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ write_pointer_inst.wr_ptr_bin[1]$_DFF_PN0_/CK (DFFR_X1)
+     5   14.63    0.04    0.13    0.13 ^ write_pointer_inst.wr_ptr_bin[1]$_DFF_PN0_/Q (DFFR_X1)
+                                         memory_inst.write_addr[1] (net)
+                  0.04    0.00    0.13 ^ _763_/B (HA_X1)
+     3    9.52    0.03    0.06    0.19 ^ _763_/CO (HA_X1)
+                                         _005_ (net)
+                  0.03    0.00    0.19 ^ _689_/A (INV_X1)
+     1    2.70    0.01    0.01    0.20 v _689_/ZN (INV_X1)
+                                         _111_ (net)
+                  0.01    0.00    0.20 v _690_/A1 (NOR2_X2)
+     1    3.45    0.02    0.02    0.22 ^ _690_/ZN (NOR2_X2)
+                                         _112_ (net)
+                  0.02    0.00    0.22 ^ _691_/A2 (NAND2_X2)
+     2    7.31    0.01    0.02    0.24 v _691_/ZN (NAND2_X2)
+                                         _113_ (net)
+                  0.01    0.00    0.24 v _692_/A (BUF_X8)
+    10   22.46    0.01    0.03    0.27 v _692_/Z (BUF_X8)
+                                         _114_ (net)
+                  0.01    0.00    0.27 v _674_/A3 (NAND3_X4)
+     1    3.05    0.01    0.02    0.29 ^ _674_/ZN (NAND3_X4)
+                                         _318_ (net)
+                  0.01    0.00    0.29 ^ _676_/A1 (NAND2_X2)
+     2    2.32    0.01    0.01    0.30 v _676_/ZN (NAND2_X2)
+                                         _320_ (net)
+                  0.01    0.00    0.30 v _684_/A1 (OR2_X1)
+     1    3.14    0.01    0.05    0.35 v _684_/ZN (OR2_X1)
+                                         _327_ (net)
+                  0.01    0.00    0.35 v _685_/A2 (NAND2_X2)
+     1    3.35    0.01    0.02    0.36 ^ _685_/ZN (NAND2_X2)
+                                         _328_ (net)
+                  0.01    0.00    0.36 ^ _686_/A2 (NOR2_X2)
+     1    1.05    0.00    0.01    0.37 v _686_/ZN (NOR2_X2)
+                                         full_next (net)
+                  0.00    0.00    0.37 v full$_DFF_PN0_/D (DFFR_X1)
+                                  0.37   data arrival time
+
+                  0.00   10.00   10.00   clock write_clk (rise edge)
+                          0.00   10.00   clock network delay (ideal)
+                          0.00   10.00   clock reconvergence pessimism
+                                 10.00 ^ full$_DFF_PN0_/CK (DFFR_X1)
+                         -0.04    9.96   library setup time
+                                  9.96   data required time
+-----------------------------------------------------------------------------
+                                  9.96   data required time
+                                 -0.37   data arrival time
+-----------------------------------------------------------------------------
+                                  9.59   slack (MET)
+
+
+
+==========================================================================
+Post synthesis report_checks -unconstrained
+--------------------------------------------------------------------------
+Startpoint: empty$_DFF_PN1_
+            (rising edge-triggered flip-flop clocked by read_clk)
+Endpoint: empty$_DFF_PN1_ (rising edge-triggered flip-flop clocked by read_clk)
+Path Group: read_clk
+Path Type: max
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock read_clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ empty$_DFF_PN1_/CK (DFFS_X1)
+     1    6.20    0.02    0.08    0.08 ^ empty$_DFF_PN1_/QN (DFFS_X1)
+                                         _000_ (net)
+                  0.02    0.00    0.08 ^ _446_/A2 (NAND2_X4)
+    10   22.16    0.01    0.03    0.10 v _446_/ZN (NAND2_X4)
+                                         _014_ (net)
+                  0.01    0.00    0.10 v _457_/A (INV_X4)
+     4    5.81    0.01    0.01    0.12 ^ _457_/ZN (INV_X4)
+                                         _095_ (net)
+                  0.01    0.00    0.12 ^ _468_/A (BUF_X1)
+    10   17.85    0.04    0.06    0.18 ^ _468_/Z (BUF_X1)
+                                         mem_read_en (net)
+                  0.04    0.00    0.18 ^ _772_/A (HA_X1)
+     1    1.60    0.01    0.04    0.22 ^ _772_/CO (HA_X1)
+                                         _016_ (net)
+                  0.01    0.00    0.22 ^ _501_/A1 (NAND2_X1)
+     1    2.13    0.01    0.01    0.23 v _501_/ZN (NAND2_X1)
+                                         _097_ (net)
+                  0.01    0.00    0.23 v _523_/A (XNOR2_X1)
+     2    3.04    0.01    0.04    0.27 v _523_/ZN (XNOR2_X1)
+                                         _099_ (net)
+                  0.01    0.00    0.27 v _534_/A (INV_X1)
+     2    2.70    0.01    0.02    0.29 ^ _534_/ZN (INV_X1)
+                                         rd_gray_next.binary[3] (net)
+                  0.01    0.00    0.29 ^ _453_/B2 (OAI21_X1)
+     1    1.55    0.01    0.02    0.30 v _453_/ZN (OAI21_X1)
+                                         _174_ (net)
+                  0.01    0.00    0.30 v _454_/A (INV_X1)
+     1    1.60    0.01    0.01    0.31 ^ _454_/ZN (INV_X1)
+                                         _175_ (net)
+                  0.01    0.00    0.31 ^ _467_/A1 (NAND2_X1)
+     1    3.18    0.01    0.01    0.33 v _467_/ZN (NAND2_X1)
+                                         _185_ (net)
+                  0.01    0.00    0.33 v _469_/A2 (NOR2_X2)
+     1    1.16    0.01    0.02    0.35 ^ _469_/ZN (NOR2_X2)
+                                         empty_next (net)
+                  0.01    0.00    0.35 ^ empty$_DFF_PN1_/D (DFFS_X1)
+                                  0.35   data arrival time
+
+                  0.00   14.00   14.00   clock read_clk (rise edge)
+                          0.00   14.00   clock network delay (ideal)
+                          0.00   14.00   clock reconvergence pessimism
+                                 14.00 ^ empty$_DFF_PN1_/CK (DFFS_X1)
+                         -0.03   13.97   library setup time
+                                 13.97   data required time
+-----------------------------------------------------------------------------
+                                 13.97   data required time
+                                 -0.35   data arrival time
+-----------------------------------------------------------------------------
+                                 13.62   slack (MET)
+
+
+Startpoint: write_pointer_inst.wr_ptr_bin[1]$_DFF_PN0_
+            (rising edge-triggered flip-flop clocked by write_clk)
+Endpoint: full$_DFF_PN0_ (rising edge-triggered flip-flop clocked by write_clk)
+Path Group: write_clk
+Path Type: max
+
+Fanout     Cap    Slew   Delay    Time   Description
+-----------------------------------------------------------------------------
+                  0.00    0.00    0.00   clock write_clk (rise edge)
+                          0.00    0.00   clock network delay (ideal)
+                  0.00    0.00    0.00 ^ write_pointer_inst.wr_ptr_bin[1]$_DFF_PN0_/CK (DFFR_X1)
+     5   14.63    0.04    0.13    0.13 ^ write_pointer_inst.wr_ptr_bin[1]$_DFF_PN0_/Q (DFFR_X1)
+                                         memory_inst.write_addr[1] (net)
+                  0.04    0.00    0.13 ^ _763_/B (HA_X1)
+     3    9.52    0.03    0.06    0.19 ^ _763_/CO (HA_X1)
+                                         _005_ (net)
+                  0.03    0.00    0.19 ^ _689_/A (INV_X1)
+     1    2.70    0.01    0.01    0.20 v _689_/ZN (INV_X1)
+                                         _111_ (net)
+                  0.01    0.00    0.20 v _690_/A1 (NOR2_X2)
+     1    3.45    0.02    0.02    0.22 ^ _690_/ZN (NOR2_X2)
+                                         _112_ (net)
+                  0.02    0.00    0.22 ^ _691_/A2 (NAND2_X2)
+     2    7.31    0.01    0.02    0.24 v _691_/ZN (NAND2_X2)
+                                         _113_ (net)
+                  0.01    0.00    0.24 v _692_/A (BUF_X8)
+    10   22.46    0.01    0.03    0.27 v _692_/Z (BUF_X8)
+                                         _114_ (net)
+                  0.01    0.00    0.27 v _674_/A3 (NAND3_X4)
+     1    3.05    0.01    0.02    0.29 ^ _674_/ZN (NAND3_X4)
+                                         _318_ (net)
+                  0.01    0.00    0.29 ^ _676_/A1 (NAND2_X2)
+     2    2.32    0.01    0.01    0.30 v _676_/ZN (NAND2_X2)
+                                         _320_ (net)
+                  0.01    0.00    0.30 v _684_/A1 (OR2_X1)
+     1    3.14    0.01    0.05    0.35 v _684_/ZN (OR2_X1)
+                                         _327_ (net)
+                  0.01    0.00    0.35 v _685_/A2 (NAND2_X2)
+     1    3.35    0.01    0.02    0.36 ^ _685_/ZN (NAND2_X2)
+                                         _328_ (net)
+                  0.01    0.00    0.36 ^ _686_/A2 (NOR2_X2)
+     1    1.05    0.00    0.01    0.37 v _686_/ZN (NOR2_X2)
+                                         full_next (net)
+                  0.00    0.00    0.37 v full$_DFF_PN0_/D (DFFR_X1)
+                                  0.37   data arrival time
+
+                  0.00   10.00   10.00   clock write_clk (rise edge)
+                          0.00   10.00   clock network delay (ideal)
+                          0.00   10.00   clock reconvergence pessimism
+                                 10.00 ^ full$_DFF_PN0_/CK (DFFR_X1)
+                         -0.04    9.96   library setup time
+                                  9.96   data required time
+-----------------------------------------------------------------------------
+                                  9.96   data required time
+                                 -0.37   data arrival time
+-----------------------------------------------------------------------------
+                                  9.59   slack (MET)
+
+
+
+==========================================================================
+Post synthesis report_power
+--------------------------------------------------------------------------
+Group                  Internal  Switching    Leakage      Total
+                          Power      Power      Power      Power (Watts)
+----------------------------------------------------------------
+Sequential             1.19e-04   1.57e-05   7.94e-06   1.42e-04  51.9%
+Combinational          7.20e-05   4.97e-05   9.90e-06   1.32e-04  48.1%
+Clock                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Macro                  0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+Pad                    0.00e+00   0.00e+00   0.00e+00   0.00e+00   0.0%
+----------------------------------------------------------------
+Total                  1.91e-04   6.54e-05   1.78e-05   2.74e-04 100.0%
+                          69.6%      23.9%       6.5%
