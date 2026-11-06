@@ -316,6 +316,8 @@ The logical FIFO storage is 64 bits. In this implementation, the memory is mappe
 
 | Metric | Result |
 |---|---:|
+| Synthesis cell area | 857.85 µm² |
+| Final placed cell area | 885 µm² |
 | Critical path delay | 0.4692 ns |
 | Estimated total power | 0.315 mW |
 | Worst Negative Slack (WNS) | 0.00 ns |
